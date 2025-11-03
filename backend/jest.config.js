@@ -1,11 +1,14 @@
+/** @type {import('jest').Config} */
 export default {
-  preset: 'ts-jest',
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
-  testMatch: ['**/tests/**/*.test.ts'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { isolatedModules: true }],
+    '^.+\\.ts$': [
+      'ts-jest',
+      { useESM: true } // 👈 new location for ts-jest options
+    ],
   },
-  moduleFileExtensions: ['ts', 'js', 'json'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'], // ✅ Ignore compiled JS
-  collectCoverageFrom: ['src/**/*.{ts,js}', '!src/**/*.d.ts'],
+  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  moduleNameMapper: { '^(\\.{1,2}/.*)\\.js$': '$1' },
+  verbose: true,
 };
