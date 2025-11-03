@@ -1,6 +1,7 @@
 import path from 'path';
 import request from 'supertest';
 import app from '../src/index';
+import { jest } from '@jest/globals';
 import * as generationService from '../src/services/generationService.js';
 
 async function createToken() {

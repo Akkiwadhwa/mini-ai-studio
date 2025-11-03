@@ -1,27 +1,66 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: 'npm' }
-      - name: Backend
-        working-directory: backend
-        run: |
-          npm ci
-          npm run build
-          npm test -- --coverage
-      - name: Frontend
-        working-directory: frontend
-        run: |
-          npm ci
-          npm run build
-          npm test -- --coverage
-      - uses: actions/upload-artifact@v4
+      - name: 🛒 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          name: coverage
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # ──────────────────────────────────────────────
+      # 🔧 BACKEND
+      # ──────────────────────────────────────────────
+      - name: 📦 Install Backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: 🏗️ Build Backend
+        working-directory: backend
+        run: npm run build
+
+      - name: 🧪 Run Backend Tests
+        working-directory: backend
+        run: npm test -- --coverage
+
+      # ──────────────────────────────────────────────
+      # 🎨 FRONTEND
+      # ──────────────────────────────────────────────
+      - name: 📦 Install Frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: 🏗️ Build Frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: 🧪 Run Frontend Tests
+        working-directory: frontend
+        run: npm test -- --coverage
+
+      # ──────────────────────────────────────────────
+      # 📤 Upload Coverage
+      # ──────────────────────────────────────────────
+      - name: 📊 Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
           path: |
             backend/coverage
             frontend/coverage

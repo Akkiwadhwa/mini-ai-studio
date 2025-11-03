@@ -8,7 +8,19 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    // ✅ Added for Vitest + TypeScript
+    "types": ["vitest/globals"],
+
+    // ✅ Optional but useful for Node + modern tooling
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
-  "include": ["src"]
+
+  // ✅ Include both source and test files
+  "include": ["src", "tests", "**/*.test.ts", "**/*.spec.ts"],
+
+  // ✅ Exclude build and node_modules
+  "exclude": ["node_modules", "dist"]
 }

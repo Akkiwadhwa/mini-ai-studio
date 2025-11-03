@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import React from 'react';
-import { render, screen, fireEvent, act, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Upload from '../src/components/Upload';
 import App from '../src/App';
@@ -86,9 +86,7 @@ describe('Studio flows', () => {
     uploadSampleImage(container);
 
     const generateButton = screen.getByRole('button', { name: /generate look/i });
-    await act(async () => {
-      fireEvent.click(generateButton);
-    });
+    fireEvent.click(generateButton);
 
     expect(await screen.findByText(/generating image/i)).toBeInTheDocument();
 
@@ -114,9 +112,7 @@ describe('Studio flows', () => {
     uploadSampleImage(container);
 
     const generateButton = screen.getByRole('button', { name: /generate look/i });
-    await act(async () => {
-      fireEvent.click(generateButton);
-    });
+    fireEvent.click(generateButton);
 
     expect(await screen.findByText(/model overloaded\. retrying/i)).toBeInTheDocument();
     expect(await screen.findByText(/model overloaded\. please try again\./i)).toBeInTheDocument();
@@ -142,18 +138,14 @@ describe('Studio flows', () => {
     uploadSampleImage(container);
 
     const generateButton = screen.getByRole('button', { name: /generate look/i });
-    await act(async () => {
-      fireEvent.click(generateButton);
-    });
+    fireEvent.click(generateButton);
 
     expect(await screen.findByText(/generating image/i)).toBeInTheDocument();
 
     const abortButton = screen.getByRole('button', { name: /abort/i });
     expect(abortButton).not.toBeDisabled();
 
-    await act(async () => {
-      fireEvent.click(abortButton);
-    });
+    fireEvent.click(abortButton);
 
     expect(await screen.findByText(/generation cancelled/i)).toBeInTheDocument();
     await waitFor(() => expect(screen.getByRole('button', { name: /abort/i })).toBeDisabled());
