@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+*.log
+.env
+uploads
+frontend/node_modules
+backend/node_modules
+frontend/dist
+backend/dist
+playwright-report
+blob-report
+test-results
