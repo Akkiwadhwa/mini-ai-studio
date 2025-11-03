@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../src/index';
+import app from '../src/index.js';
 
 function uniqueEmail() {
   return `user-${Date.now()}-${Math.random().toString(16).slice(2)}@test.com`;

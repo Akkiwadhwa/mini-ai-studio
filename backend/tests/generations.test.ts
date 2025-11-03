@@ -16,6 +16,7 @@ describe('Generations', () => {
   const originalForceOverload = process.env.FORCE_OVERLOAD;
 
   beforeAll(async () => {
+    process.env.SKIP_GENERATION_DELAY = 'true';
     ({ default: app } = await import('../src/index.js'));
   });
 
@@ -24,6 +25,7 @@ describe('Generations', () => {
   });
 
   afterAll(() => {
+    delete process.env.SKIP_GENERATION_DELAY;
     if (originalForceOverload === undefined) {
       delete process.env.FORCE_OVERLOAD;
     } else {

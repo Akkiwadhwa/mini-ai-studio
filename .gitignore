@@ -5,6 +5,7 @@ coverage
 *.log
 .env
 uploads
+backend/tmp/
 frontend/node_modules
 backend/node_modules
 frontend/dist
