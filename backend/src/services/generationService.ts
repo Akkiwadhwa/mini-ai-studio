@@ -10,11 +10,17 @@ interface CreateGenerationInput {
 }
 
 export async function simulateGenerationDelay(): Promise<void> {
+  if (process.env.JEST_WORKER_ID !== undefined || process.env.SKIP_GENERATION_DELAY === 'true') {
+    return;
+  }
   const delay = 1000 + Math.floor(Math.random() * 1000);
   await new Promise(resolve => setTimeout(resolve, delay));
 }
 
 export function shouldSimulateOverload(): boolean {
+  const override = process.env.FORCE_OVERLOAD?.toLowerCase();
+  if (override === 'true' || override === '1') return true;
+  if (override === 'false' || override === '0') return false;
   return Math.random() < 0.2;
 }
 

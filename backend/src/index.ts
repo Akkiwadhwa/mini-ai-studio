@@ -4,8 +4,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
-import authRoutes from './routes/auth';
-import generationRoutes from './routes/generations';
+import authRoutes from './routes/auth.js';
+import generationRoutes from './routes/generations.js';
 
 const app = express();
 app.use(

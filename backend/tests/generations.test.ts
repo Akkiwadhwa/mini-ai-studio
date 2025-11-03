@@ -1,8 +1,7 @@
 import path from 'path';
 import request from 'supertest';
-import app from '../src/index';
-import { jest } from '@jest/globals';
-import * as generationService from '../src/services/generationService.js';
+
+let app: any;
 
 async function createToken() {
   const email = `gen-${Date.now()}-${Math.random().toString(16).slice(2)}@test.com`;
@@ -14,25 +13,32 @@ async function createToken() {
 
 describe('Generations', () => {
   const img = path.join(process.cwd(), 'tests', 'fixtures', 'tiny.png');
+  const originalForceOverload = process.env.FORCE_OVERLOAD;
 
-  beforeEach(() => {
-    jest.spyOn(generationService, 'simulateGenerationDelay').mockResolvedValue(undefined);
+  beforeAll(async () => {
+    ({ default: app } = await import('../src/index.js'));
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
+  beforeEach(() => {
+    process.env.FORCE_OVERLOAD = '0';
+  });
+
+  afterAll(() => {
+    if (originalForceOverload === undefined) {
+      delete process.env.FORCE_OVERLOAD;
+    } else {
+      process.env.FORCE_OVERLOAD = originalForceOverload;
+    }
   });
 
   it('rejects unauthorized access with 401 error payload', async () => {
     const res = await request(app).get('/generations');
-
     expect(res.status).toBe(401);
     expect(res.body).toEqual({ error: 'Missing Authorization header' });
   });
 
   it('creates a generation and returns it in history', async () => {
     const t = await createToken();
-    jest.spyOn(generationService, 'shouldSimulateOverload').mockReturnValue(false);
 
     const createRes = await request(app)
       .post('/generations')
@@ -55,18 +61,13 @@ describe('Generations', () => {
     expect(listRes.status).toBe(200);
     expect(Array.isArray(listRes.body)).toBe(true);
     expect(listRes.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          prompt: 'Red jacket',
-          style: 'Streetwear'
-        })
-      ])
+      expect.arrayContaining([expect.objectContaining({ prompt: 'Red jacket', style: 'Streetwear' })])
     );
   });
 
   it('returns 503 with message when overload is simulated', async () => {
+    process.env.FORCE_OVERLOAD = '1';
     const t = await createToken();
-    jest.spyOn(generationService, 'shouldSimulateOverload').mockReturnValue(true);
 
     const res = await request(app)
       .post('/generations')
@@ -81,7 +82,6 @@ describe('Generations', () => {
 
   it('enforces validation and returns 400 error payload when image is missing', async () => {
     const t = await createToken();
-    jest.spyOn(generationService, 'shouldSimulateOverload').mockReturnValue(false);
 
     const res = await request(app)
       .post('/generations')
@@ -95,7 +95,6 @@ describe('Generations', () => {
 
   it('enforces validation and returns 400 error payload when style is invalid', async () => {
     const t = await createToken();
-    jest.spyOn(generationService, 'shouldSimulateOverload').mockReturnValue(false);
 
     const res = await request(app)
       .post('/generations')

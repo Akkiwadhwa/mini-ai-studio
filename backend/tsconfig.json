@@ -1,26 +1,16 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "module": "ES2022",
-    "moduleResolution": "Bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "isolatedModules": true,
     "outDir": "dist",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
-
-    // ✅ Added for Vitest + TypeScript
-    "types": ["vitest/globals"],
-
-    // ✅ Optional but useful for Node + modern tooling
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-
-  // ✅ Include both source and test files
-  "include": ["src", "tests", "**/*.test.ts", "**/*.spec.ts"],
-
-  // ✅ Exclude build and node_modules
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"]
 }
