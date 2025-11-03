@@ -15,6 +15,9 @@ jobs:
         node-version: [20]
 
     steps:
+      # ──────────────────────────────────────────────
+      # 🛒 CHECKOUT + NODE SETUP
+      # ──────────────────────────────────────────────
       - name: 🛒 Checkout repository
         uses: actions/checkout@v4
 
@@ -31,17 +34,22 @@ jobs:
         working-directory: backend
         run: npm ci
 
-      - name: 🏗️ Build Backend
+      # 👇 Remove compiled tests to avoid Jest ESM errors
+      - name: 🧹 Clean compiled test files
         working-directory: backend
-        run: npm run build
+        run: rm -rf dist/tests
 
       - name: 🧪 Run Backend Tests
         working-directory: backend
         env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }} # ✅ Define JWT secret for CI
-          DATABASE_URL: "file:./test.db" # optional for sqlite
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-secret-key' }}
+          DATABASE_URL: "file:./test.db"
           NODE_ENV: "test"
         run: npm test -- --coverage
+
+      - name: 🏗️ Build Backend
+        working-directory: backend
+        run: npm run build
 
       # ──────────────────────────────────────────────
       # 🎨 FRONTEND
@@ -57,12 +65,12 @@ jobs:
       - name: 🧪 Run Frontend Tests
         working-directory: frontend
         env:
-          VITE_API_BASE_URL: "http://localhost:4000" # optional
+          VITE_API_BASE_URL: "http://localhost:4000"
           NODE_ENV: "test"
         run: npm test -- --coverage
 
       # ──────────────────────────────────────────────
-      # 📤 Upload Coverage
+      # 📤 UPLOAD COVERAGE
       # ──────────────────────────────────────────────
       - name: 📊 Upload coverage reports
         uses: actions/upload-artifact@v4
