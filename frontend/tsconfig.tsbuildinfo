@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/historylist.tsx","./src/components/upload.tsx","./src/hooks/useauth.ts","./src/hooks/usegenerate.ts","./src/hooks/useretry.ts","./src/services/api.ts","./tests/generate.test.tsx"],"version":"5.9.3"}
